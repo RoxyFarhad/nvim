@@ -1,54 +1,33 @@
 return {
-  -- Copilot
+  -- Disable Copilot
+  { "zbirenbaum/copilot.lua", enabled = false },
+
+  -- Supermaven AI autocomplete
   {
-    "zbirenbaum/copilot.lua",
-    cmd = "Copilot",
+    "supermaven-inc/supermaven-nvim",
     event = "InsertEnter",
     opts = {
-      suggestion = {
-        enabled = true,
-        auto_trigger = true,
-        keymap = {
-          accept = false, -- We'll handle Tab in blink.cmp config
-          accept_word = false,
-          accept_line = false,
-          next = "<M-]>",
-          prev = "<M-[>",
-          dismiss = "<C-]>",
-        },
+      keymaps = {
+        accept_suggestion = "<Tab>",
+        clear_suggestion = "<C-]>",
+        accept_word = "<C-j>",
       },
-      panel = {
-        enabled = true,
-        auto_refresh = false,
+      ignore_filetypes = {},
+      color = {
+        suggestion_color = "#585858",
       },
-      filetypes = {
-        ["*"] = true,
-      },
+      log_level = "off",
     },
   },
 
-  -- Configure blink.cmp with Tab key
+  -- Update blink.cmp Tab key since Supermaven handles it now
   {
     "saghen/blink.cmp",
     optional = true,
     opts = {
       keymap = {
         preset = "default",
-        ["<Tab>"] = {
-          function(cmp)
-            if cmp.is_visible() then
-              return cmp.select_next()
-            end
-            -- Check if copilot has a suggestion
-            local copilot = require("copilot.suggestion")
-            if copilot.is_visible() then
-              copilot.accept()
-              return true
-            end
-            return false
-          end,
-          "fallback",
-        },
+        ["<Tab>"] = {},
         ["<S-Tab>"] = { "select_prev", "fallback" },
         ["<CR>"] = { "accept", "fallback" },
       },

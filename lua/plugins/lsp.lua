@@ -53,8 +53,6 @@ return {
             end
           end,
         },
-        -- JavaScript/TypeScript
-        ts_ls = {},
         -- YAML
         yamlls = {
           settings = {
@@ -72,36 +70,26 @@ return {
     },
   },
 
-  -- Better LSP UI
-  {
-    "nvimdev/lspsaga.nvim",
-    event = "LspAttach",
-    config = function()
-      require("lspsaga").setup({
-        ui = {
-          border = "rounded",
-          code_action = "",
-        },
-        lightbulb = {
-          enable = false,
-          sign = false,
-        },
-        diagnostic = {
-          show_code_action = true,
-          show_source = true,
-          jump_num_shortcut = true,
-          max_width = 0.7,
-          max_height = 0.6,
-          text_hl_follow = false,
-          border_follow = true,
-          keys = {
-            exec_action = 'o',
-            quit = 'q',
-          },
-        },
-      })
+  -- Disable lspsaga
+  { "nvimdev/lspsaga.nvim", enabled = false },
 
-      -- Configure vim diagnostics to use floating windows
+  -- LSP keymaps using native vim.lsp and Telescope
+  {
+    "neovim/nvim-lspconfig",
+    keys = {
+      { "K", function() vim.lsp.buf.hover() end, desc = "Hover Documentation" },
+      { "<leader>K", function() vim.diagnostic.open_float() end, desc = "Show Diagnostics" },
+      { "gd", function() require("telescope.builtin").lsp_definitions() end, desc = "Goto Definition" },
+      { "gD", function() require("telescope.builtin").lsp_type_definitions() end, desc = "Type Definition" },
+      { "gr", function() require("telescope.builtin").lsp_references() end, desc = "Find References" },
+      { "gI", function() require("telescope.builtin").lsp_implementations() end, desc = "Goto Implementation" },
+      { "<leader>ca", function() vim.lsp.buf.code_action() end, desc = "Code Action" },
+      { "<leader>rn", function() vim.lsp.buf.rename() end, desc = "Rename" },
+      { "<leader>o", function() require("telescope.builtin").lsp_document_symbols() end, desc = "Document Symbols" },
+      { "[d", function() vim.diagnostic.goto_prev() end, desc = "Previous Diagnostic" },
+      { "]d", function() vim.diagnostic.goto_next() end, desc = "Next Diagnostic" },
+    },
+    init = function()
       vim.diagnostic.config({
         float = {
           border = "rounded",
@@ -111,19 +99,6 @@ return {
         },
       })
     end,
-    keys = {
-      { "K", "<cmd>Lspsaga hover_doc<CR>", desc = "Hover Documentation" },
-      { "<leader>K", function() vim.diagnostic.open_float() end, desc = "Show Diagnostics" },
-      { "gd", "<cmd>Lspsaga goto_definition<CR>", desc = "Goto Definition" },
-      { "gD", "<cmd>Lspsaga peek_definition<CR>", desc = "Peek Definition" },
-      { "gr", "<cmd>Lspsaga finder<CR>", desc = "Find References" },
-      { "gI", "<cmd>Lspsaga finder imp<CR>", desc = "Goto Implementation" },
-      { "<leader>ca", "<cmd>Lspsaga code_action<CR>", desc = "Code Action" },
-      { "<leader>rn", "<cmd>Lspsaga rename<CR>", desc = "Rename" },
-      { "<leader>o", "<cmd>Lspsaga outline<CR>", desc = "Symbol Outline" },
-      { "[d", "<cmd>Lspsaga diagnostic_jump_prev<CR>", desc = "Previous Diagnostic" },
-      { "]d", "<cmd>Lspsaga diagnostic_jump_next<CR>", desc = "Next Diagnostic" },
-    },
   },
 
   -- Show function signature while typing
